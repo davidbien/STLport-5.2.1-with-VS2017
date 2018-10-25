@@ -284,7 +284,12 @@ public:
     : _M_start(src.get()._M_start), _M_finish(src.get()._M_finish),
       _M_end_of_storage(src.get()._M_end_of_storage) {
     //Make the source destroyable
+	//REVIEW:<dbien>: This is actually transferring the ownership of the allocation of src.get()._M_start._M_p to this.
     src.get()._M_start._M_p = 0;
+	//REVIEW:<dbien>: Calling src.push_back(bool) should cause a bug to occur if we don't also do the following. src should be usuable(and empty) after these modifications.
+	src.get()._M_end_of_storage = 0;
+    src.get()._M_finish._M_p = 0;
+
   }
 #endif
 

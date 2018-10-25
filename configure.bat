@@ -1,4 +1,5 @@
 @ECHO OFF
+@ECHO OFF
 REM **************************************************************************
 REM *
 REM * configure.bat for setting up compiling STLport under Windows
@@ -111,6 +112,7 @@ echo    msvc7    Microsoft Visual C++ .NET 2002
 echo    msvc71   Microsoft Visual C++ .NET 2003
 echo    msvc8    Microsoft Visual C++ 2005
 echo    msvc9    Microsoft Visual C++ 2008
+echo    msvc14   Microsoft Visual C++ 2017 (vc14)
 echo    icl      Intel C++ Compiler
 echo    evc3     Microsoft eMbedded Visual C++ 3 (*)
 echo    evc4     Microsoft eMbedded Visual C++ .NET (*)
@@ -129,7 +131,9 @@ echo    available, only the ones that make a difference when building STLport ar
 echo    The following keywords are available:
 echo    win95    Windows 95 compatible
 echo    win98    Windows 98 and up to Windows XP excluded
-echo    winxp    Windows XP or later (default)
+echo    winxp    Windows XP or later
+echo    win7     Windows 7 or later (default)
+echo    win10    Windows 10 or later
 echo.
 echo "-x"
 echo    Enables cross-compiling; the result is that all built files that are
@@ -203,6 +207,7 @@ if "%1" == "msvc71" goto oc_msv71
 if "%1" == "msvc7" goto oc_msvc7
 if "%1" == "msvc8" goto oc_msvc8
 if "%1" == "msvc9" goto oc_msvc9
+if "%1" == "msvc14" goto oc_msvc14
 if "%1" == "icl"   goto oc_icl
 
 if "%1" == "evc3" goto oc_evc3
@@ -244,6 +249,12 @@ goto oc_msvc
 echo Setting compiler: Microsoft Visual C++ 2008
 echo COMPILER_NAME=vc9 >> build\Makefiles\nmake\config.mak
 set SELECTED_COMPILER_VERSION=90
+goto oc_msvc
+
+:oc_msvc14
+echo Setting compiler: Microsoft Visual C++ 2017
+echo COMPILER_NAME=vc14 >> build\Makefiles\nmake\config.mak
+set SELECTED_COMPILER_VERSION=140
 goto oc_msvc
 
 :oc_msvc
@@ -434,6 +445,8 @@ REM **************************************************************************
 if "%2" == "win95" goto op_win95
 if "%2" == "win98" goto op_win98
 if "%2" == "winxp" goto op_winxp
+if "%2" == "win7" goto op_win7
+if "%2" == "win10" goto op_win10
 
 echo Unknown platform: %2
 goto op_end
@@ -441,18 +454,35 @@ goto op_end
 :op_win95
 echo Setting platform: Windows 95
 echo WINVER=0x0400 >> build\Makefiles\nmake\config.mak
+echo _WIN32_WINNT=0x0400 >> build\Makefiles\nmake\config.mak
 set PLATFORM_SPECIFIED=1
 goto op_end
 
 :op_win98
 echo Setting platform: Windows 98
 echo WINVER=0x0410 >> build\Makefiles\nmake\config.mak
+echo _WIN32_WINNT=0x0410 >> build\Makefiles\nmake\config.mak
 set PLATFORM_SPECIFIED=1
 goto op_end
 
 :op_winxp
 echo Setting platform: Windows XP
 echo WINVER=0x0501 >> build\Makefiles\nmake\config.mak
+echo _WIN32_WINNT=0x0501 >> build\Makefiles\nmake\config.mak
+set PLATFORM_SPECIFIED=1
+goto op_end
+
+:op_win7
+echo Setting platform: Windows 7
+echo WINVER=0x0601 >> build\Makefiles\nmake\config.mak
+echo _WIN32_WINNT=0x0601 >> build\Makefiles\nmake\config.mak
+set PLATFORM_SPECIFIED=1
+goto op_end
+
+:op_win10
+echo Setting platform: Windows 10
+echo WINVER=0x0A00 >> build\Makefiles\nmake\config.mak
+echo _WIN32_WINNT=0x0A00 >> build\Makefiles\nmake\config.mak
 set PLATFORM_SPECIFIED=1
 goto op_end
 
@@ -612,9 +642,10 @@ REM **************************************************************************
 :end_loop
 
 if "%PLATFORM_SPECIFIED%" == "1" goto comp
-echo Setting platform: Windows XP
+echo Setting platform: Windows 7
 echo.
-echo WINVER=0x0501 >> build\Makefiles\nmake\config.mak
+echo WINVER=0x0601 >> build\Makefiles\nmake\config.mak
+echo _WIN32_WINNT=0x0601 >> build\Makefiles\nmake\config.mak
 
 :comp
 echo Done configuring STLport.

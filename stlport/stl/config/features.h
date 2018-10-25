@@ -308,7 +308,7 @@
 /* Some compiler support 0 size array so we use negative size array to generate
  * a compilation time error.
  */
-#  define _STLP_STATIC_ASSERT(expr) typedef char __static_assert[expr ? 1 : -1];
+#  define _STLP_STATIC_ASSERT(expr) typedef char __static_assert[ (expr) ? 1 : -1 ];
 #endif
 
 /* apple mpw exception handling bug */
@@ -800,7 +800,7 @@ namespace _STL = _STLP_STD_NAME;
 #if defined (_STLP_STATIC_CONST_INIT_BUG)
 #  define _STLP_STATIC_CONSTANT(__type, __assignment) enum { __assignment }
 #else
-#  define _STLP_STATIC_CONSTANT(__type, __assignment) static const __type __assignment
+#  define _STLP_STATIC_CONSTANT(__type, __assignment) static constexpr __type __assignment
 #endif
 
 #if defined (_STLP_HAS_NO_EXCEPTIONS)

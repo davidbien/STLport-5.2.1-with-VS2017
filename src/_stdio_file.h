@@ -102,7 +102,12 @@ inline int _FILE_fd(const FILE *__f) { return __f->_handle; }
 /* the prototypes are taken from LynxOS patch for STLport 4.0 */
 inline int _FILE_fd(const FILE *__f) { return __f->_fd; }
 
+#elif defined (_STLP_MSVC)
+
+inline int _FILE_fd(const FILE *__f) { return _fileno( const_cast< FILE * >(__f) ); }
+
 #else  /* The most common access to file descriptor. */
+
 
 inline int _FILE_fd(const FILE *__f) { return __f->_file; }
 

@@ -62,8 +62,10 @@ typedef void (* __oom_handler_type)();
 
 class _STLP_CLASS_DECLSPEC __malloc_alloc {
 public:
+	typedef __malloc_alloc _TyStaticAlloc;
   // this one is needed for proper simple_alloc wrapping
   typedef char value_type;
+  typedef size_t size_type;
   static void* _STLP_CALL allocate(size_t __n)
 #if !defined (_STLP_USE_NO_IOSTREAMS)
   ;
@@ -77,6 +79,11 @@ public:
   }
 #endif
 
+	bool operator == (__malloc_alloc const &) const
+	{
+		return true;
+	}
+
   static void _STLP_CALL deallocate(void* __p, size_t /* __n */) { free((char*)__p); }
 #if !defined (_STLP_USE_NO_IOSTREAMS)
   static __oom_handler_type _STLP_CALL set_malloc_handler(__oom_handler_type __f);
@@ -89,7 +96,8 @@ class _STLP_CLASS_DECLSPEC __new_alloc {
 public:
   // this one is needed for proper simple_alloc wrapping
   typedef char value_type;
-  static void* _STLP_CALL allocate(size_t __n) { return __stl_new(__n); }
+	typedef size_t size_type;
+	static void* _STLP_CALL allocate(size_t __n) { return __stl_new(__n); }
   static void _STLP_CALL deallocate(void* __p, size_t) { __stl_delete(__p); }
 };
 
@@ -105,6 +113,7 @@ class __debug_alloc : public _Alloc {
 public:
   typedef _Alloc __allocator_type;
   typedef typename _Alloc::value_type value_type;
+  typedef typename _Alloc::size_type size_type;
 private:
   struct __alloc_header {
     size_t __magic: 16;
@@ -152,7 +161,8 @@ class _STLP_CLASS_DECLSPEC __node_alloc {
 
 public:
   // this one is needed for proper simple_alloc wrapping
-  typedef char value_type;
+	typedef size_t size_type;
+	typedef char value_type;
   /* __n must be > 0      */
   static void* _STLP_CALL allocate(size_t& __n)
   { return (__n > (size_t)_MAX_BYTES) ? __stl_new(__n) : _M_allocate(__n); }
@@ -201,6 +211,7 @@ struct _Alloc_traits {
   typedef typename _Rebind_type::other  allocator_type;
   static allocator_type create_allocator(const _Orig& __a)
   { return allocator_type(_STLP_CONVERT_ALLOCATOR(__a, _Tp)); }
+	static constexpr bool _S_instanceless = true;
 #else
   // this is not actually true, used only to pass this type through
   // to dynamic overload selection in _STLP_alloc_proxy methods
@@ -393,6 +404,104 @@ _STLP_EXPORT_TEMPLATE_CLASS allocator<wchar_t>;
 _STLP_EXPORT_TEMPLATE_CLASS allocator<void*>;
 #  endif
 #endif
+
+// REVIEW:<dbien>: This moved from an old version of STLPort so that I could continue to use it in my codebase.
+// Allocator adaptor to turn an SGI-style allocator (e.g. alloc, __malloc_alloc)
+// into a standard-conforming allocator.   Note that this adaptor does
+// *not* assume that all objects of the underlying alloc class are
+// identical, nor does it assume that all of the underlying alloc's
+// member functions are static member functions.  Note, also, that 
+// _stlallocator<_Tp, alloc> is essentially the same thing as allocator<_Tp>.
+
+template <class _Tp, class _Alloc>
+struct _stlallocator {
+  _Alloc __underlying_alloc;
+
+  typedef size_t    size_type;
+  typedef ptrdiff_t difference_type;
+  typedef _Tp*       pointer;
+  typedef const _Tp* const_pointer;
+  typedef _Tp&       reference;
+  typedef const _Tp& const_reference;
+  typedef _Tp        value_type;
+
+  template <class _Tp1> struct rebind {
+    typedef _stlallocator<_Tp1, _Alloc> other;
+  };
+
+  _stlallocator() _STLP_NOTHROW {}
+  _stlallocator(const _stlallocator& __a) _STLP_NOTHROW
+    : __underlying_alloc(__a.__underlying_alloc) {}
+  template <class _Tp1> 
+  _stlallocator(const _stlallocator<_Tp1, _Alloc>& __a) _STLP_NOTHROW
+    : __underlying_alloc(__a.__underlying_alloc) {}
+  ~_stlallocator() _STLP_NOTHROW {}
+
+  pointer address(reference __x) const { return &__x; }
+  const_pointer address(const_reference __x) const { return &__x; }
+
+  // __n is permitted to be 0.
+  _Tp* allocate(size_type __n, const void* = 0) {
+    return __n != 0 
+        ? static_cast<_Tp*>(__underlying_alloc.allocate(__n * sizeof(_Tp))) 
+        : 0;
+  }
+
+  // __p is not permitted to be a null pointer.
+  void deallocate(pointer __p, size_type __n)
+    { __underlying_alloc.deallocate(__p, __n * sizeof(_Tp)); }
+
+  size_type max_size() const _STLP_NOTHROW 
+    { return size_t(-1) / sizeof(_Tp); }
+
+  void construct(pointer __p, const _Tp& __val) { new(__p) _Tp(__val); }
+  void destroy(pointer __p) { __p->~_Tp(); }
+};
+
+template < class t_tyAlloc >
+class _stlallocator< void, t_tyAlloc > 
+{
+  typedef size_t      size_type;
+  typedef ptrdiff_t   difference_type;
+  typedef void*       pointer;
+  typedef const void* const_pointer;
+  typedef void        value_type;
+
+  template <class _Tp1> struct rebind 
+  {
+    typedef _stlallocator<_Tp1, t_tyAlloc> other;
+  };
+};
+
+template <class _Tp, class _Alloc>
+inline bool operator==(const _stlallocator<_Tp, _Alloc>& __a1,
+                       const _stlallocator<_Tp, _Alloc>& __a2)
+{
+  return __a1.__underlying_alloc == __a2.__underlying_alloc;
+}
+
+template <class _Tp, class _Alloc>
+inline bool operator!=(const _stlallocator<_Tp, _Alloc>& __a1,
+                       const _stlallocator<_Tp, _Alloc>& __a2)
+{
+  return __a1.__underlying_alloc != __a2.__underlying_alloc;
+}
+
+template<class _Tp, class _Alloc>
+class simple_alloc {
+public:
+    // Get to the actual static allocator for this allocation:
+    typedef typename _Alloc::_TyStaticAlloc _TyStaticAlloc;
+
+    static _Tp* allocate(size_t __n)
+      { return 0 == __n ? 0 : (_Tp*) _TyStaticAlloc::allocate(__n * sizeof (_Tp)); }
+    static _Tp* allocate(void)
+      { return (_Tp*) _TyStaticAlloc::allocate(sizeof (_Tp)); }
+    static void deallocate(_Tp* __p, size_t __n)
+      { if (0 != __n) _TyStaticAlloc::deallocate(__p, __n * sizeof (_Tp)); }
+    static void deallocate(_Tp* __p)
+      { _TyStaticAlloc::deallocate(__p, sizeof (_Tp)); }
+};
 
 _STLP_MOVE_TO_PRIV_NAMESPACE
 

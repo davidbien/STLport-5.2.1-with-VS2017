@@ -489,6 +489,7 @@ inline long double pow(long double __x, int __y) { return (_Pow_int(__x, __y)); 
 #  endif
 #endif
 
+#ifndef _STLP_MSVC
 #if (defined (_STLP_MSVC) && !defined (_STLP_WCE)) || defined (__ICL) || defined (__sun)
 #  if defined (_STLP_MSVC) && (_STLP_MSVC >= 1400)
 #    pragma warning (push)
@@ -509,6 +510,7 @@ inline double hypot(double __x, double __y) { return _hypot(__x,__y); }
 _STLP_DEF_MATH_INLINE2(hypot, _hypot)
 #  endif
 #endif
+#endif !_STLP_MSVC
 
 #if defined (_STLP_RESTORE_FUNCTION_INTRINSIC)
 //restoration of the default intrinsic status of those functions:

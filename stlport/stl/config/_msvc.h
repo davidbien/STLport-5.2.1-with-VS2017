@@ -15,6 +15,9 @@
 #  define _STLP_MSVC_LIB _MSC_VER
 #endif
 
+//#define _STLP_VERBOSE_AUTO_LINK 1
+//#define _STLP_DONT_USE_AUTO_LINK 1
+
 #if defined (__BUILDING_STLPORT) && defined (_MANAGED)
 /* Building a managed version of STLport is not supported because we haven't
  * found a good reason to support it. However, building a managed translation
@@ -22,6 +25,13 @@
  */
 #  error Sorry but building a managed version of STLport is not supported.
 #endif
+
+ // define native include path before trying to include anything
+#define _STLP_NATIVE_HEADER(__x) <MSVCINCLUDEC/ucrt/__x>
+#define _STLP_NATIVE_C_HEADER(__x) <MSVCINCLUDEC/ucrt/__x>
+#define _STLP_NATIVE_OLD_STREAMS_HEADER(__x) <MSVCINCLUDEC/ucrt/__x>
+#define _STLP_NATIVE_CPP_C_HEADER(__x) <MSVCINCLUDECPP/include/__x>
+#define _STLP_NATIVE_CPP_RUNTIME_HEADER(__x) <MSVCINCLUDECPP/include/__x>
 
 #if defined (_STLP_USING_PLATFORM_SDK_COMPILER)
 /* This is a specific section for compilers coming with platform SDKs. Native
@@ -100,7 +110,8 @@
  * # endif
  */
 
-/** Note: the macro _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT is defined
+#if defined (_STLP_USE_EXCEPTIONS)
+ /** Note: the macro _STLP_NO_UNCAUGHT_EXCEPT_SUPPORT is defined
 unconditionally and undef'ed here when applicable. */
 #  if defined (UNDER_CE)
 /* eVCx:
@@ -122,8 +133,11 @@ work, 7.0 is still unknown (we assume it works until negative report). */
 #    endif
 #    if (_STLP_MSVC < 1300)
 #      define _STLP_NOTHROW
+#    else
+#      define _STLP_NOTHROW throw()
 #    endif
 #  endif
+#endif
 
 #  if (_STLP_MSVC <= 1300)
 #    define _STLP_STATIC_CONST_INIT_BUG   1

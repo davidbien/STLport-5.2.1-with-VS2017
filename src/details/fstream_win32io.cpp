@@ -121,12 +121,15 @@ extern "C" {
 #  if defined (__MINGW32__)
  __MINGW_IMPORT ioinfo * __pioinfo[];
 #  else
-  extern _CRTIMP ioinfo * __pioinfo[];
+//  extern _CRTIMP ioinfo * __pioinfo[];
 #  endif
 } // extern "C"
 // end of 'semi-documented' declarations
 
-static ios_base::openmode _get_osfflags(int fd, HANDLE oshandle) {
+static ios_base::openmode _get_osfflags(int fd, HANDLE oshandle) 
+{
+	// REVIEW:<dbien>: We must change how this works and it could suck.
+#ifdef __VC_DIDNT_CHANGE_AND_F_THIS_UP
   char dosflags = 0;
   if (fd >= 0)
     dosflags = _pioinfo(fd)->osfile;
@@ -142,6 +145,11 @@ static ios_base::openmode _get_osfflags(int fd, HANDLE oshandle) {
     mode |= O_TEXT;
   else
     mode |= O_BINARY;
+#else __VC_DIDNT_CHANGE_AND_F_THIS_UP
+	// Get the text/binary/unicode mode by setting things to O_BINARY and then restoring to the return value:
+	int mode = _setmode(fd, O_BINARY);
+	(void)_setmode(fd, mode);
+#endif !__VC_DIDNT_CHANGE_AND_F_THIS_UP
 
   // For Read/Write access we have to guess
   DWORD dummy, dummy2;

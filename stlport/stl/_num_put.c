@@ -495,6 +495,7 @@ num_put<_CharT, _OutputIter>::do_put(_OutputIter __s, ios_base& __f, _CharT /*__
 #if defined (_STLP_MSVC)
 #  pragma warning (push)
 #  pragma warning (disable : 4311) //pointer truncation from 'const void*' to 'unsigned long'
+#  pragma warning (disable : 4302) //pointer truncation from 'const void*' to 'unsigned long'
 #endif
   _OutputIter result =
 #ifdef _STLP_LONG_LONG

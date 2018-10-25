@@ -33,7 +33,7 @@ struct _exception;
 #  if defined (_STLP_HAS_INCLUDE_NEXT)
 #    include_next <stdarg.h>
 #  else
-#    include _STLP_NATIVE_C_HEADER(stdarg.h)
+#    include _STLP_NATIVE_CPP_C_HEADER(stdarg.h)
 #  endif
 
 #  if (_STLP_OUTERMOST_HEADER_ID == 0x261)

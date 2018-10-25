@@ -45,7 +45,7 @@
 #  if defined (_STLP_HAS_INCLUDE_NEXT)
 #    include_next <fstream>
 #  else
-#    include _STLP_NATIVE_HEADER(fstream)
+#    include _STLP_NATIVE_CPP_C_HEADER(fstream)
 #  endif
 #endif
 

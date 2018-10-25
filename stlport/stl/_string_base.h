@@ -46,7 +46,7 @@ public:
   //dums: Some compiler(MSVC6) require it to be public not simply protected!
   enum {_DEFAULT_SIZE = 4 * sizeof( void * )};
   //This is needed by the full move framework
-  typedef _Alloc allocator_type;
+  typedef typename _Alloc::template rebind< _Tp >::other allocator_type;
   typedef _STLP_alloc_proxy<_Tp*, _Tp, allocator_type> _AllocProxy;
   typedef size_t size_type;
 private:
