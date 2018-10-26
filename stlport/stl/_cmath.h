@@ -510,7 +510,7 @@ inline double hypot(double __x, double __y) { return _hypot(__x,__y); }
 _STLP_DEF_MATH_INLINE2(hypot, _hypot)
 #  endif
 #endif
-#endif !_STLP_MSVC
+#endif
 
 #if defined (_STLP_RESTORE_FUNCTION_INTRINSIC)
 //restoration of the default intrinsic status of those functions:

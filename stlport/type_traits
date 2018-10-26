@@ -25,11 +25,13 @@
 // while libstdc++ v3, 20050921 (4.0.2) not; use libstdc++ instead
 // # if defined(STLPORT) || (defined(__GNUC__) && (__GNUC__ < 4)) /* !defined(__GLIBCXX__) || (defined(__GNUC__) && (__GNUC__ < 4)) */
 
+#ifdef _STLP_MSVC
 _STD_BEGIN
 using _CSTD size_t;
 _STD_END
 
 #include _STLP_NATIVE_CPP_RUNTIME_HEADER(xtr1common)
+#endif
 
 _STLP_BEGIN_NAMESPACE
 

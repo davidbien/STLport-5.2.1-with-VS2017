@@ -4,6 +4,8 @@
 
 base=`cd \`dirname $0\`; echo $PWD`
 
+# echo base:$base
+
 configmak=$base/build/Makefiles/gmake/config.mak
 
 write_option() {
@@ -17,7 +19,7 @@ write_over_option() {
 }
 
 print_help() {
-  cat <<EOF
+  cat <<EOF/
 Configuration utility.
 
 Usage:

@@ -219,6 +219,35 @@ struct _Alloc_traits {
 #endif
 };
 
+template < class _Tp >
+struct _Alloc_traits< _Tp, __malloc_alloc >
+{
+	typedef __malloc_alloc _Orig;
+	static constexpr bool _S_instanceless = true;
+};
+
+template < class _Tp >
+struct _Alloc_traits< _Tp, __new_alloc >
+{
+	typedef __new_alloc _Orig;
+	static constexpr bool _S_instanceless = true;
+};
+
+template < class _Tp >
+struct _Alloc_traits< _Tp, __node_alloc >
+{
+	typedef __node_alloc _Orig;
+	static constexpr bool _S_instanceless = true;
+};
+
+template < class _Tp, class t_TyAlloc >
+struct _Alloc_traits< _Tp, __debug_alloc< t_TyAlloc > >
+{
+	typedef __debug_alloc< t_TyAlloc > _Orig;
+	static constexpr bool _S_instanceless = true;
+};
+
+
 #if defined (_STLP_USE_PERTHREAD_ALLOC)
 
 _STLP_END_NAMESPACE
@@ -413,49 +442,142 @@ _STLP_EXPORT_TEMPLATE_CLASS allocator<void*>;
 // member functions are static member functions.  Note, also, that 
 // _stlallocator<_Tp, alloc> is essentially the same thing as allocator<_Tp>.
 
+// _stlallocator_base: The instanced version.
+template < class _Tp, class _Alloc, const bool t_fInstancelessAllocator >
+class _stlallocator_base
+{
+public:
+	typedef size_t    size_type;
+	typedef ptrdiff_t difference_type;
+	typedef _Tp*       pointer;
+	typedef const _Tp* const_pointer;
+	typedef _Tp&       reference;
+	typedef const _Tp& const_reference;
+	typedef _Tp        value_type;
+
+	_Alloc __underlying_alloc;
+
+	_stlallocator_base() _STLP_NOTHROW {}
+	_stlallocator_base(const _stlallocator_base& __a) _STLP_NOTHROW
+		: __underlying_alloc(__a.__underlying_alloc) {}
+	template <class _Tp1>
+	_stlallocator_base(const _stlallocator_base<_Tp1, _Alloc, t_fInstancelessAllocator>& __a) _STLP_NOTHROW
+		: __underlying_alloc(__a.__underlying_alloc) {}
+	~_stlallocator_base() _STLP_NOTHROW {}
+
+	static pointer address(reference __x) { return &__x; }
+	static const_pointer address(const_reference __x) { return &__x; }
+
+	// __n is permitted to be 0.
+	_Tp* allocate(size_type __n, const void* = 0) 
+	{
+		return __n != 0
+			? static_cast<_Tp*>(__underlying_alloc.allocate(__n * sizeof(_Tp)))
+			: 0;
+	}
+
+	// __p is not permitted to be a null pointer.
+	void deallocate(pointer __p, size_type __n)
+	{
+		__underlying_alloc.deallocate(__p, __n * sizeof(_Tp));
+	}
+
+	static size_type max_size() _STLP_NOTHROW
+	{
+		return size_t(-1) / sizeof(_Tp);
+	}
+
+	static void construct(pointer __p, const _Tp& __val) { new(__p) _Tp(__val); }
+	static void destroy(pointer __p) { __p->~_Tp(); }
+
+	bool operator == (_stlallocator_base const & _r) const
+	{
+		return __underlying_alloc == _r.__underlying_alloc;
+	}
+	bool operator != (_stlallocator_base const & _r) const
+	{
+		return __underlying_alloc != _r.__underlying_alloc;
+	}
+};
+
+// _stlallocator_base: The instanceless version.
+template < class _Tp, class _Alloc >
+class _stlallocator_base< _Tp, _Alloc, true >
+{
+public:
+	typedef size_t    size_type;
+	typedef ptrdiff_t difference_type;
+	typedef _Tp*       pointer;
+	typedef const _Tp* const_pointer;
+	typedef _Tp&       reference;
+	typedef const _Tp& const_reference;
+	typedef _Tp        value_type;
+
+	_stlallocator_base() _STLP_NOTHROW {}
+	_stlallocator_base(const _stlallocator_base& __a) _STLP_NOTHROW {}
+	template <class _Tp1>
+	_stlallocator_base(const _stlallocator_base<_Tp1, _Alloc, true>& __a) _STLP_NOTHROW {}
+	~_stlallocator_base() _STLP_NOTHROW {}
+
+	static pointer address(reference __x) { return &__x; }
+	static const_pointer address(const_reference __x) { return &__x; }
+
+	// __n is permitted to be 0.
+	static _Tp* allocate(size_type __n, const void* = 0) 
+	{
+		return __n != 0 ? static_cast<_Tp*>(_Alloc::allocate(__n * sizeof(_Tp))) : 0;
+	}
+
+	// __p is not permitted to be a null pointer.
+	static void deallocate(pointer __p, size_type __n)
+	{
+		_Alloc::deallocate( __p, __n * sizeof(_Tp) );
+	}
+
+	static size_type max_size() _STLP_NOTHROW
+	{
+		return size_t(-1) / sizeof(_Tp);
+	}
+
+	static void construct(pointer __p, const _Tp& __val) { new(__p) _Tp(__val); }
+	static void destroy(pointer __p) { __p->~_Tp(); }
+
+	bool operator == (_stlallocator_base const & _r) const
+	{
+		return true;
+	}
+	bool operator != (_stlallocator_base const & _r) const
+	{
+		return false;
+	}
+};
+
 template <class _Tp, class _Alloc>
-struct _stlallocator {
-  _Alloc __underlying_alloc;
-
-  typedef size_t    size_type;
-  typedef ptrdiff_t difference_type;
-  typedef _Tp*       pointer;
-  typedef const _Tp* const_pointer;
-  typedef _Tp&       reference;
-  typedef const _Tp& const_reference;
-  typedef _Tp        value_type;
-
-  template <class _Tp1> struct rebind {
-    typedef _stlallocator<_Tp1, _Alloc> other;
-  };
-
+struct _stlallocator 
+	: public _stlallocator_base< _Tp, _Alloc, _Alloc_traits< _Tp, _Alloc >::_S_instanceless >
+{
+private:
+	typedef _stlallocator_base< _Tp, _Alloc, _Alloc_traits< _Tp, _Alloc >::_S_instanceless > _TyBase;
+public:
   _stlallocator() _STLP_NOTHROW {}
   _stlallocator(const _stlallocator& __a) _STLP_NOTHROW
-    : __underlying_alloc(__a.__underlying_alloc) {}
+    : _TyBase(__a) {}
   template <class _Tp1> 
-  _stlallocator(const _stlallocator<_Tp1, _Alloc>& __a) _STLP_NOTHROW
-    : __underlying_alloc(__a.__underlying_alloc) {}
-  ~_stlallocator() _STLP_NOTHROW {}
+  _stlallocator( const _stlallocator<_Tp1, _Alloc>& __a ) _STLP_NOTHROW
+    : _TyBase( __a ) {}
 
-  pointer address(reference __x) const { return &__x; }
-  const_pointer address(const_reference __x) const { return &__x; }
+	template <class _Tp1> struct rebind {
+		typedef _stlallocator<_Tp1, _Alloc> other;
+	};
 
-  // __n is permitted to be 0.
-  _Tp* allocate(size_type __n, const void* = 0) {
-    return __n != 0 
-        ? static_cast<_Tp*>(__underlying_alloc.allocate(__n * sizeof(_Tp))) 
-        : 0;
-  }
-
-  // __p is not permitted to be a null pointer.
-  void deallocate(pointer __p, size_type __n)
-    { __underlying_alloc.deallocate(__p, __n * sizeof(_Tp)); }
-
-  size_type max_size() const _STLP_NOTHROW 
-    { return size_t(-1) / sizeof(_Tp); }
-
-  void construct(pointer __p, const _Tp& __val) { new(__p) _Tp(__val); }
-  void destroy(pointer __p) { __p->~_Tp(); }
+	bool operator == (_stlallocator const & _r) const
+	{
+		return _TyBase::operator == (_r);
+	}
+	bool operator != (_stlallocator const & _r) const
+	{
+		return _TyBase::operator != (_r);
+	}
 };
 
 template < class t_tyAlloc >
@@ -472,20 +594,6 @@ class _stlallocator< void, t_tyAlloc >
     typedef _stlallocator<_Tp1, t_tyAlloc> other;
   };
 };
-
-template <class _Tp, class _Alloc>
-inline bool operator==(const _stlallocator<_Tp, _Alloc>& __a1,
-                       const _stlallocator<_Tp, _Alloc>& __a2)
-{
-  return __a1.__underlying_alloc == __a2.__underlying_alloc;
-}
-
-template <class _Tp, class _Alloc>
-inline bool operator!=(const _stlallocator<_Tp, _Alloc>& __a1,
-                       const _stlallocator<_Tp, _Alloc>& __a2)
-{
-  return __a1.__underlying_alloc != __a2.__underlying_alloc;
-}
 
 template<class _Tp, class _Alloc>
 class simple_alloc {
