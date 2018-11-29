@@ -22,7 +22,7 @@ SRCROOT=..
 
 STLPORT_INCLUDE_DIR = ../../stlport
 
-STLPORT_NATIVE_INCLUDE_PATHS= /DMSVCINCLUDEC="C:\Program Files (x86)\Windows Kits\10\Include\10.0.17134.0" /DMSVCINCLUDECPP="c:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\VC\Tools\MSVC\14.15.26726"
+STLPORT_NATIVE_INCLUDE_PATHS= /DMSVCINCLUDEC="C:\Program Files (x86)\Windows Kits\10\include\10.0.17763.0" /DMSVCINCLUDECPP="C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\VC\Tools\MSVC\14.16.27023"
 
 # pull in the MSVC include directories that were set up by the vcvars*.bat. In this way we don't hardcode too much.
 # ignore all standard include paths as this might cause the build to fail.
