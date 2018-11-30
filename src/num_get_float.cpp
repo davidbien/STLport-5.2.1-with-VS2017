@@ -801,7 +801,7 @@ D _Stl_string_to_doubleT(const char *s)
 
   if (c == 'e'-'0' || c == 'E'-'0') {
     bool negate_exp = false;
-    register int e = 0;
+    int e = 0;
     c = *s++;
     if (c == '+' || c == ' ') {
       c = *s++;

@@ -39,6 +39,11 @@
 #  include <stl/_string_fwd.h>
 #endif
 
+#ifdef __GNUC__
+// For GCC/clang we need to include all of basic_string because there is a dependency below that is pointed out by the compiler.
+#  include <stl/_string.h>
+#endif
+
 #include <stl/_facets_fwd.h>
 
 _STLP_BEGIN_NAMESPACE

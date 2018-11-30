@@ -44,6 +44,14 @@
 #  define _STLP_BITSET
 #endif
 
+#ifdef __GNUC__
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <type_traits>
+#  else
+#    include _STLP_NATIVE_HEADER(type_traits)
+#  endif
+#endif
+
 #if (_STLP_OUTERMOST_HEADER_ID == 0x2)
 #  ifndef _STLP_INTERNAL_BITSET
 #    include <stl/_bitset.h>

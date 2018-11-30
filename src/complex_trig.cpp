@@ -104,10 +104,14 @@ _STLP_DECLSPEC complex<long double> _STLP_CALL cos(const complex<long double>& z
 // tan
 template <class _Tp>
 static complex<_Tp> tanT(const complex<_Tp>& z, const _Tp& Tp_limit) {
-  _Tp re2 = 2.f * z._M_re;
-  _Tp im2 = 2.f * z._M_im;
+  _Tp re2 = z._M_re * 2.f;
+  _Tp im2 = z._M_im * 2.f;
 
-  if (::abs(im2) > Tp_limit)
+#ifdef __GNUC__
+  if ( fabsl(im2) > Tp_limit)
+#else
+  if ( ::abs(im2) > Tp_limit)
+#endif 
     return complex<_Tp>(0.f, (im2 > 0 ? 1.f : -1.f));
   else {
     _Tp den = ::cos(re2) + ::cosh(im2);
@@ -170,7 +174,11 @@ template <class _Tp>
 static complex<_Tp> tanhT(const complex<_Tp>& z, const _Tp& Tp_limit) {
   _Tp re2 = 2.f * z._M_re;
   _Tp im2 = 2.f * z._M_im;
-  if (::abs(re2) > Tp_limit)
+#ifdef __GNUC__
+  if ( fabsl(re2) > Tp_limit)
+#else
+  if ( ::abs(re2) > Tp_limit)
+#endif 
     return complex<_Tp>((re2 > 0 ? 1.f : -1.f), 0.f);
   else {
     _Tp den = ::cosh(re2) + ::cos(im2);

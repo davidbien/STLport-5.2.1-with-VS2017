@@ -34,9 +34,11 @@
 #  include <stdio.h>
 #endif
 
+#ifdef _STLP_MSVC
 _STD_BEGIN
 using _CSTD gets_s;
 _STD_END
+#endif //_STLP_MSVC
 
 #if defined (__MWERKS__)
 #  undef stdin
@@ -98,7 +100,10 @@ using _STLP_VENDOR_CSTD::fwrite;
  using _STLP_VENDOR_CSTD::putchar;
 #    endif
 
+#
+#ifdef _STLP_MSVC
 using _STLP_VENDOR_CSTD::gets_s;
+#endif //_STLP_MSVC
 #    if !defined (_WIN32_WCE) || (_WIN32_WCE < 400)
 using _STLP_VENDOR_CSTD::perror;
 #    endif

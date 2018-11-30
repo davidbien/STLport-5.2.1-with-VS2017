@@ -431,7 +431,7 @@ void _STLP_CALL __write_formatted_timeT(_STLP_BASIC_IOSTRING(_Ch) &buf,
 #    if defined (__USE_BSD) || defined (__BEOS__)
         diff = t->tm_gmtoff;
 #    else
-        diff = t->__tm_gmtoff;
+        diff = t->tm_gmtoff;
 #    endif
         if (diff < 0) {
           buf.append(1, ct.widen('-'));

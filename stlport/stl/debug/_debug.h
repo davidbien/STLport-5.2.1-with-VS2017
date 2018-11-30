@@ -237,7 +237,11 @@ inline bool  _STLP_CALL __valid_range(const _Iterator& __i1 ,const _Iterator& __
                                       const bidirectional_iterator_tag&) {
   // check if comparable
   bool __dummy(__i1==__i2);
+#ifdef __GNUC__
+  return __dummy;
+#else
   return (__dummy==__dummy);
+#endif
 }
 
 template <class _Iterator>
@@ -245,7 +249,11 @@ inline bool  _STLP_CALL __valid_range(const _Iterator& __i1 ,const _Iterator& __
                                       const forward_iterator_tag&) {
   // check if comparable
   bool __dummy(__i1==__i2);
+#ifdef __GNUC__
+  return __dummy;
+#else
   return (__dummy==__dummy);
+#endif
 }
 
 template <class _Iterator>

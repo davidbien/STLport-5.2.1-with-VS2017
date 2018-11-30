@@ -420,6 +420,7 @@ inline double ldexp(double __x, int __y) { return __stlp_ldexp(__x, __y); }
  */
 #if (!defined (_STLP_MSVC_LIB) || (_STLP_MSVC_LIB < 1310) || defined(UNDER_CE)) && \
     (!defined (__HP_aCC) || (__HP_aCC < 30000)) && \
+	!defined( __GNUC__ ) && \
     !defined (__WATCOMC__)
 inline double abs(double __x)
 { return ::fabs(__x); }

@@ -27,6 +27,14 @@
    !(defined (_STLP_NO_IOSTREAMS) && defined (_STLP_IMPORT_VENDOR_STD))
 #  include <stl/_ioserr.h>
 
+#ifdef __GNUC__
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <type_traits>
+#  else
+#    include _STLP_NATIVE_HEADER(type_traits)
+#  endif
+#endif
+
 #  ifndef _STLP_INTERNAL_OSTREAM
 #    include <stl/_ostream.h>
 #  endif

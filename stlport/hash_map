@@ -35,6 +35,14 @@
 #  error The hash_map and hash_multimap class are STLport extensions.
 #endif
 
+#ifdef __GNUC__
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <type_traits>
+#  else
+#    include _STLP_NATIVE_HEADER(type_traits)
+#  endif
+#endif
+
 #include <stl/_hash_map.h>
 
 #if (_STLP_OUTERMOST_HEADER_ID == 0x4028)
