@@ -26,6 +26,14 @@
 #  define _STLP_STDEXCEPT
 #endif
 
+#ifdef __GNUC__
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <type_traits>
+#  else
+#    include _STLP_NATIVE_HEADER(type_traits)
+#  endif
+#endif
+
 #if (_STLP_OUTERMOST_HEADER_ID == 0x63)
 #  ifndef _STLP_INTERNAL_STDEXCEPT
 #    include <stl/_stdexcept.h>

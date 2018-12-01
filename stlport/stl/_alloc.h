@@ -600,6 +600,7 @@ class simple_alloc {
 public:
     // Get to the actual static allocator for this allocation:
     typedef typename _Alloc::_TyStaticAlloc _TyStaticAlloc;
+    typedef typename _Alloc::size_type size_type;
 
     static _Tp* allocate(size_t __n)
       { return 0 == __n ? 0 : (_Tp*) _TyStaticAlloc::allocate(__n * sizeof (_Tp)); }
