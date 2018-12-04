@@ -27,7 +27,7 @@
 #  include <stdint.h>
 #endif
 
-#if defined (__linux__) || defined (__MINGW32__) || defined (__CYGWIN__) || \
+#if defined (__FreeBSD__) || defined (__linux__) || defined (__MINGW32__) || defined (__CYGWIN__) || \
     defined (__BORLANDC__) || defined (__DMC__) || defined (__HP_aCC)
 
 #  if defined (__BORLANDC__)
@@ -475,7 +475,7 @@ static double _Stl_atod(char *buffer, ptrdiff_t ndigit, int dexp) {
 
 #endif
 
-#if defined (__linux__) || defined (__MINGW32__) || defined (__CYGWIN__) || \
+#if defined (__FreeBSD__) || defined (__linux__) || defined (__MINGW32__) || defined (__CYGWIN__) || \
     defined (__BORLANDC__) || defined (__DMC__) || defined (__HP_aCC)
 
 template <class D, class IEEE, int M, int BIAS>
@@ -695,8 +695,8 @@ static double _Stl_string_to_double(const char *s) {
   }
 
   if (c == 'e' - '0' || c == 'E' - '0') {
-    register unsigned negate_exp = 0;
-    register int e = 0;
+    unsigned negate_exp = 0;
+    int e = 0;
     c = *s++;
     if (c == '+' || c == ' ') {
       c = *s++;
@@ -741,7 +741,7 @@ static double _Stl_string_to_double(const char *s) {
 
 #endif
 
-#if defined (__linux__) || defined (__MINGW32__) || defined (__CYGWIN__) || \
+#if defined (__FreeBSD__) || defined (__linux__) || defined (__MINGW32__) || defined (__CYGWIN__) || \
     defined (__BORLANDC__) || defined (__DMC__) || defined (__HP_aCC)
 
 template <class D, class IEEE, int M, int BIAS>
@@ -864,7 +864,7 @@ __string_to_float(const __iostring& v, double& val)
 #if !defined (_STLP_NO_LONG_DOUBLE)
 void _STLP_CALL
 __string_to_float(const __iostring& v, long double& val) {
-#if !defined (__linux__) && !defined (__MINGW32__) && !defined (__CYGWIN__) && \
+#if !defined (__FreeBSD__) && !defined (__linux__) && !defined (__MINGW32__) && !defined (__CYGWIN__) && \
     !defined (__BORLANDC__) && !defined (__DMC__) && !defined (__HP_aCC)
   //The following function is valid only if long double is an alias for double.
   _STLP_STATIC_ASSERT( sizeof(long double) <= sizeof(double) )

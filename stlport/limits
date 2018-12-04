@@ -30,6 +30,14 @@
 #  endif
 #endif
 
+#ifdef __GNUC__
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <type_traits>
+#  else
+#    include _STLP_NATIVE_HEADER(type_traits)
+#  endif
+#endif
+
 #if (_STLP_OUTERMOST_HEADER_ID != 0x39) || defined (_STLP_IMPORT_VENDOR_STD)
 #  if defined (_STLP_HAS_INCLUDE_NEXT)
 #    include_next <limits>

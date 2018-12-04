@@ -35,6 +35,11 @@
 #  else
 #    include _STLP_NATIVE_HEADER(type_traits)
 #  endif
+#  if defined (_STLP_HAS_INCLUDE_NEXT)
+#    include_next <limits>
+#  else
+#    include _STLP_NATIVE_HEADER(limits)
+#  endif
 #endif
 
 // Individual facets

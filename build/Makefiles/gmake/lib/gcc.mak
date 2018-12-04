@@ -168,7 +168,7 @@ ifeq ($(OSNAME),freebsd)
 PTHR := $(shell if [ ${OSREL_MAJOR} -gt 5 ] ; then echo "pthread" ; else if [ ${OSREL_MAJOR} -lt 5 ] ; then echo "c_r" ; else if [ ${OSREL_MINOR} -lt 3 ] ; then echo "c_r" ; else echo "pthread"; fi ; fi ; fi)
 START_OBJ := $(shell for o in crti.o crtbeginS.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
 END_OBJ := $(shell for o in crtendS.o crtn.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
-STDLIBS := -Wl,--whole-archive -lsupc++ ${_LGCC_EH} -Wl,--no-whole-archive ${_LGCC_S} -l${PTHR} -lc -lm
+STDLIBS := -L/usr/local/lib/gcc7 -Wl,--whole-archive -lsupc++ ${_LGCC_EH} -Wl,--no-whole-archive ${_LGCC_S} -l${PTHR} -lc -lm
 endif
 ifeq ($(OSNAME),netbsd)
 START_OBJ := $(shell for o in crti.o crtbeginS.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
