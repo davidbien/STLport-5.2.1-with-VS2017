@@ -50,6 +50,9 @@
 
 _STLP_BEGIN_NAMESPACE
 
+template <class _CharT>
+class char_traits; // predeclare for some OS's due to header file inclusion.
+
 template <class _Tp> class allocator;
 
 #define _STLP_NULL_CHAR_INIT(_ChT) _STLP_DEFAULT_CONSTRUCTED(_ChT)

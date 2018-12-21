@@ -19,11 +19,13 @@
 #ifndef _STLP_STRING_FWD_H
 #define _STLP_STRING_FWD_H
 
-#ifndef _STLP_INTERNAL_IOSFWD
-#  include <stl/_iosfwd.h>
-#endif
-
 _STLP_BEGIN_NAMESPACE
+
+template <class _Tp>
+class allocator; // Predeclare allocator due to some compiler/OS's include structures.
+
+template <class _CharT>
+class char_traits; // predeclare for some OS's due to header file inclusion.
 
 #if !defined (_STLP_LIMITED_DEFAULT_TEMPLATES)
 template <class _CharT,
@@ -52,6 +54,10 @@ const char* _STLP_CALL __get_c_string(const string& __str);
 _STLP_MOVE_TO_STD_NAMESPACE
 
 _STLP_END_NAMESPACE
+
+#ifndef _STLP_INTERNAL_IOSFWD
+#  include <stl/_iosfwd.h>
+#endif
 
 #endif /* _STLP_STRING_FWD_H */
 

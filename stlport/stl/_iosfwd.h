@@ -18,11 +18,13 @@
 // In this implementation, the declarations in <iosfwd> contain default
 // template arguments.  All of the other I/O headers include <iosfwd>.
 
-#ifndef _STLP_CHAR_TRAITS_H
-#  include <stl/char_traits.h>
-#endif
-
 _STLP_BEGIN_NAMESPACE
+
+template <class _Tp>
+class allocator; // Predeclare allocator due to some compiler/OS's include structures.
+
+template <class _CharT>
+class char_traits; // predeclare for some OS's due to header file inclusion.
 
 class ios_base;
 
@@ -151,6 +153,10 @@ typedef basic_fstream<wchar_t, char_traits<wchar_t> >  wfstream;
 #endif
 
 _STLP_END_NAMESPACE
+
+#ifndef _STLP_CHAR_TRAITS_H
+#  include <stl/char_traits.h>
+#endif
 
 #endif
 
