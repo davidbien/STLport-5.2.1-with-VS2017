@@ -96,7 +96,6 @@ _STLP_DECLSPEC wostream wclog(0);
 // Most compilers, however, silently accept this instead of diagnosing
 // it as an error.
 
-#define __DMC__
 #  ifndef __DMC__
 _STLP_DECLSPEC _Stl_aligned_buffer<istream> cin;
 _STLP_DECLSPEC _Stl_aligned_buffer<ostream> cout;
