@@ -1159,8 +1159,8 @@ wstring __ASCIIToWide(const char *ascii);
 string __WideToASCII(const wchar_t *wide);
 #endif
 
-inline const char* _STLP_CALL
-__get_c_string(const string& __str) { return __str.c_str(); }
+inline const char * _STLP_CALL
+__get_c_string( const string & __str) { return __str.c_str(); }
 
 _STLP_MOVE_TO_STD_NAMESPACE
 

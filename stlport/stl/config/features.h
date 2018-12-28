@@ -831,7 +831,7 @@ namespace _STL = _STLP_STD_NAME;
 #    define _STLP_THROWS(x) throw(x)
 #  endif
 #  if !defined (_STLP_NOTHROW)
-#    define _STLP_NOTHROW throw()
+#    define _STLP_NOTHROW noexcept
 #  endif
 #else
 #  define _STLP_TRY

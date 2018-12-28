@@ -16,7 +16,7 @@ CXX := ${_FORCE_CXX}
 endif
 
 ifndef _FORCE_CC
-CC := gcc
+CC := clang
 else
 CC := ${_FORCE_CC}
 endif
