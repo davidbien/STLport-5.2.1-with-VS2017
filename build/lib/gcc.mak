@@ -11,6 +11,8 @@ include Makefile.inc
 include ${SRCROOT}/Makefiles/gmake/top.mak
 include ${SRCROOT}/Makefiles/gmake/subdirs.mak
 
+$(info OS=$(OSNAME))
+
 ifeq ($(OSNAME),linux)
 DEFS += -D_GNU_SOURCE
 endif

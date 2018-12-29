@@ -44,6 +44,10 @@ endif
 
 endif
 
+ifeq ($(OSNAME),darwin)
+NOT_USE_NOSTDLIB := 1
+endif
+
 ifndef NOT_USE_NOSTDLIB
 ifeq ($(OSNAME),linux)
 _USE_NOSTDLIB := 1
@@ -62,10 +66,6 @@ _USE_NOSTDLIB := 1
 endif
 
 ifeq ($(OSNAME),sunos)
-_USE_NOSTDLIB := 1
-endif
-
-ifeq ($(OSNAME),darwin)
 _USE_NOSTDLIB := 1
 endif
 
@@ -110,7 +110,11 @@ NOSTDLIB :=
 ifeq ($(shell ${CXX} ${CXXFLAGS} -print-file-name=libgcc_eh.a),libgcc_eh.a)
 # gcc builded with --disable-shared, (no library libgcc_eh.a); all exception support in libgcc.a
 _LGCC_EH :=
+ifeq ($(OSNAME),darwin)
+_LGCC_S :=
+else
 _LGCC_S := -lgcc
+endif
 else
 # gcc builded with --enable-shared (default)
 ifdef USE_STATIC_LIBGCC

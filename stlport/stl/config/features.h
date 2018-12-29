@@ -800,7 +800,7 @@ namespace _STL = _STLP_STD_NAME;
 #if defined (_STLP_STATIC_CONST_INIT_BUG)
 #  define _STLP_STATIC_CONSTANT(__type, __assignment) enum { __assignment }
 #else
-#  define _STLP_STATIC_CONSTANT(__type, __assignment) static constexpr __type __assignment
+#  define _STLP_STATIC_CONSTANT(__type, __assignment) static const __type __assignment
 #endif
 
 #if defined (_STLP_HAS_NO_EXCEPTIONS)
@@ -831,7 +831,11 @@ namespace _STL = _STLP_STD_NAME;
 #    define _STLP_THROWS(x) throw(x)
 #  endif
 #  if !defined (_STLP_NOTHROW)
+#   if defined(__APPLE__)
+#    define _STLP_NOTHROW throw()
+#   else
 #    define _STLP_NOTHROW noexcept
+#   endif
 #  endif
 #else
 #  define _STLP_TRY

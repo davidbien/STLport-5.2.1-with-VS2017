@@ -211,7 +211,7 @@ struct _Alloc_traits {
   typedef typename _Rebind_type::other  allocator_type;
   static allocator_type create_allocator(const _Orig& __a)
   { return allocator_type(_STLP_CONVERT_ALLOCATOR(__a, _Tp)); }
-	static constexpr bool _S_instanceless = true;
+	static const bool _S_instanceless = true;
 #else
   // this is not actually true, used only to pass this type through
   // to dynamic overload selection in _STLP_alloc_proxy methods
@@ -223,28 +223,28 @@ template < class _Tp >
 struct _Alloc_traits< _Tp, __malloc_alloc >
 {
 	typedef __malloc_alloc _Orig;
-	static constexpr bool _S_instanceless = true;
+	static const bool _S_instanceless = true;
 };
 
 template < class _Tp >
 struct _Alloc_traits< _Tp, __new_alloc >
 {
 	typedef __new_alloc _Orig;
-	static constexpr bool _S_instanceless = true;
+	static const bool _S_instanceless = true;
 };
 
 template < class _Tp >
 struct _Alloc_traits< _Tp, __node_alloc >
 {
 	typedef __node_alloc _Orig;
-	static constexpr bool _S_instanceless = true;
+	static const bool _S_instanceless = true;
 };
 
 template < class _Tp, class t_TyAlloc >
 struct _Alloc_traits< _Tp, __debug_alloc< t_TyAlloc > >
 {
 	typedef __debug_alloc< t_TyAlloc > _Orig;
-	static constexpr bool _S_instanceless = true;
+	static const bool _S_instanceless = true;
 };
 
 
