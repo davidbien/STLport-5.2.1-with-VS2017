@@ -537,7 +537,7 @@ namespace stlport = _STLP_STD_NAME;
 
 /* Backward compatibility:
  */
-namespace _STL = _STLP_STD_NAME;
+namespace __STD = _STLP_STD_NAME;
 #undef __STLPORT_NAMESPACE
 #define __STLPORT_NAMESPACE _STLP_STD_NAME
 
